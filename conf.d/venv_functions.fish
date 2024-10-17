@@ -43,10 +43,20 @@ function venv-activate -d "Activates a virtual environment from a centralised lo
     fish_add_path --path $venv_root/$venv_name/bin
 end
 
-function venv-reset -d "Resets the default virtual environment"
+function venv-deactivate -d "Deactivates the current virtual environment"
     if type -q deactivate
         deactivate > /dev/null
     end
+
+    if test -n $VIRTUAL_ENV
+        if set -l index (contains -i $VIRTUAL_ENV/bin $PATH)
+            set -e PATH[$index]
+        end
+    end
+end
+
+function venv-reset -d "Resets the default virtual environment"
+    venv-deactivate
 
     set -q DEFAULT_VENV; or set DEFAULT_VENV "gallegoj"
     venv-activate $DEFAULT_VENV
