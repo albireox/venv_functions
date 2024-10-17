@@ -48,6 +48,12 @@ function venv-reset -d "Resets the default virtual environment"
         deactivate > /dev/null
     end
 
+    if test -n $VIRTUAL_ENV
+        if set -l index (contains -i $VIRTUAL_ENV/bin $PATH)
+            set -e PATH[$index]
+        end
+    end
+
     set -q DEFAULT_VENV; or set DEFAULT_VENV "gallegoj"
     venv-activate $DEFAULT_VENV
 end
