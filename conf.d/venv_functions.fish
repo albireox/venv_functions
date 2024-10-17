@@ -52,6 +52,7 @@ function venv-deactivate -d "Deactivates the current virtual environment"
         if set -l index (contains -i $VIRTUAL_ENV/bin $PATH)
             set -e PATH[$index]
         end
+        set -e VIRTUAL_ENV
     end
 end
 
