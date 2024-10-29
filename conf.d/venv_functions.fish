@@ -60,6 +60,7 @@ function venv-reset -d "Resets the default virtual environment"
     venv-deactivate
 
     set -q DEFAULT_VENV; or set DEFAULT_VENV "gallegoj"
+    set -e VIRTUAL_ENV_PROMPT
     venv-activate $DEFAULT_VENV
 end
 
