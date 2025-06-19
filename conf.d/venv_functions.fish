@@ -1,14 +1,15 @@
 function venv-create -d "Create a virtual environment in a centralised location"
     argparse 'h/help' 'p/python=' -- $argv 2>/dev/null
+    argparse 'x/prompt=' -- $argv 2>/dev/null
     argparse -N 1 -X 1 -- $argv 2>/dev/null or return 0
 
     if test $_flag_help
-        echo "Usage: venv-create --python PYTHON-VERSION <venv_name>"
+        echo "Usage: venv-create --python PYTHON-VERSION --prompt PROMPT <venv_name>"
         return 0
     end
 
     if test (count $argv) -ne 1
-        echo "Usage: venv-create --python PYTHON-VERSION <venv_name>"
+        echo "Usage: venv-create --python PYTHON-VERSION --prompt PROMPT <venv_name>"
         return 1
     end
 
@@ -19,10 +20,16 @@ function venv-create -d "Create a virtual environment in a centralised location"
 
     pushd $venv_root > /dev/null
 
-    if test $_flag_python
-        uv venv --python $_flag_python $venv_name
+    if test $_flag_prompt
+        set -l venv_prompt $_flag_prompt
     else
-        uv venv $venv_name
+        set -l venv_prompt (basename $PWD)
+    end
+
+    if test $_flag_python
+        uv venv --python $_flag_python --prompt $venv_prompt $venv_name
+    else
+        uv venv --prompt $venv_prompt $venv_name
     end
 
     popd > /dev/null
@@ -66,10 +73,11 @@ end
 
 function venv-uv -d "Create a virtual environment with the given name and add mise-en-place configuration"
     argparse 'p/python=' -- $argv 2>/dev/null
+    argparse 'x/prompt=' -- $argv 2>/dev/null
     argparse -N 0 -X 1 -- $argv 2>/dev/null or return 0
 
     if test (count $argv) -ge 2
-        echo "Usage: venv-uv --python PYTHON-VERSION [<venv_name>]"
+        echo "Usage: venv-uv --python PYTHON-VERSION --prompt PROMPT [<venv_name>]"
         return 1
     end
 
@@ -78,10 +86,16 @@ function venv-uv -d "Create a virtual environment with the given name and add mi
         set venv_name ".venv"
     end
 
-    if test $_flag_python
-        uv venv --python $_flag_python $venv_name
+    if test $_flag_prompt
+        set venv_prompt $_flag_prompt
     else
-        uv venv $venv_name
+        set venv_prompt (basename $PWD)
+    end
+
+    if test $_flag_python
+        uv venv --python $_flag_python --prompt $venv_prompt $venv_name
+    else
+        uv venv --prompt $venv_prompt $venv_name
     end
 
     echo "layout_uv" > .envrc
