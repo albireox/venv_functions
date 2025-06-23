@@ -106,3 +106,30 @@ function venv-list -d "List virtual environments in the centralised location"
     set -q VENV_ROOT; and set -l venv_root $VENV_ROOT; or set -l venv_root $HOME/.local/share/virtualenv
     find $venv_root -mindepth 1 -maxdepth 1 -type d -printf "%f\n"
 end
+
+function venv-update-prompt -d "Updates the prompt in pyvenv.cfg"
+    argparse -N 0 -X 1 -- $argv 2>/dev/null or return 0
+
+    if test (count $argv) -ge 2
+        echo "Usage: venv-update-prompt [<prompt-name>]"
+        return 1
+    end
+
+    set prompt $argv[1]
+    if test -z $prompt
+        set prompt (basename $PWD)
+    end
+
+    set pyvenv_cfg ".venv/pyvenv.cfg"
+    if not test -e $pyvenv_cfg
+        echo "No pyvenv.cfg found in .venv/pyvenv.cfg"
+        return 1
+    end
+
+    grep -E "prompt\s*=" .venv/pyvenv.cfg > /dev/null
+    if test $status -eq 0
+        sed -i -E -r "s/^(prompt[[:space:]]?=[[:space:]]?).+/\1"$prompt"/g" $pyvenv_cfg
+    else
+        echo "prompt = $prompt" >> $pyvenv_cfg
+    end
+end
