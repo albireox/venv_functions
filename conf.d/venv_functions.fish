@@ -46,8 +46,9 @@ function venv-activate -d "Activates a virtual environment from a centralised lo
     set -l venv_name $argv[1]
     set -q VENV_ROOT; and set -l venv_root $VENV_ROOT; or set -l venv_root $HOME/.local/share/virtualenv
 
-    set -gx VIRTUAL_ENV $venv_root/$venv_name
-    fish_add_path --path $venv_root/$venv_name/bin
+    # set -gx VIRTUAL_ENV $venv_root/$venv_name
+    # fish_add_path --path $venv_root/$venv_name/bin
+    source $venv_root/$venv_name/bin/activate.fish
 end
 
 function venv-deactivate -d "Deactivates the current virtual environment"
