@@ -125,11 +125,11 @@ function venv-update-prompt -d "Updates the prompt in pyvenv.cfg"
     if test $_flag_dir
         set venv_dir $_flag_dir
     else
-        if [[ -n "$VIRTUAL_ENV" ]] then
+        if test -n "$VIRTUAL_ENV"
             set venv_dir $VIRTUAL_ENV
         else
             set venv_dir ".venv"
-        fi
+        end
     end
 
     set pyvenv_cfg "$venv_dir/pyvenv.cfg"
