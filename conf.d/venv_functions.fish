@@ -125,7 +125,7 @@ function venv-update-prompt -d "Updates the prompt in pyvenv.cfg"
     if test $_flag_dir
         set venv_dir $_flag_dir
     else
-        if test $VIRTUAL_ENV
+        if test "$VIRTUAL_ENV"
             set venv_dir $VIRTUAL_ENV
         else
             set venv_dir ".venv"
@@ -138,9 +138,10 @@ function venv-update-prompt -d "Updates the prompt in pyvenv.cfg"
         return 1
     end
 
-    grep -E "prompt\s*=" $venv_dir/pyvenv.cfg > /dev/null
+    grep -E "prompt\s*=" $pyvenv_cfg > /dev/null
     if test $status -eq 0
-        sed -i -E -r "s/^(prompt[[:space:]]?=[[:space:]]?).+/\1"$prompt"/g" $pyvenv_cfg
+        # sed -i -E -r "s/^(prompt[[:space:]]?=[[:space:]]?).+/\1"$prompt"/g" $pyvenv_cfg
+        sed -i -r "s/^(prompt[[:space:]]?=[[:space:]]?).+/\1"$prompt"/g" $pyvenv_cfg
     else
         echo "prompt = $prompt" >> $pyvenv_cfg
     end
