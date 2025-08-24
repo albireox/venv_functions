@@ -125,12 +125,16 @@ function venv-update-prompt -d "Updates the prompt in pyvenv.cfg"
     if test $_flag_dir
         set venv_dir $_flag_dir
     else
-        set venv_dir ".venv"
+        if [[ -n "$VIRTUAL_ENV" ]] then
+            set venv_dir $VIRTUAL_ENV
+        else
+            set venv_dir ".venv"
+        fi
     end
 
     set pyvenv_cfg "$venv_dir/pyvenv.cfg"
     if not test -e $pyvenv_cfg
-        echo "No pyvenv.cfg found in .venv/pyvenv.cfg"
+        echo "No pyvenv.cfg found in $venv_dir/pyvenv.cfg"
         return 1
     end
 
