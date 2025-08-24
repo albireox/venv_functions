@@ -109,10 +109,11 @@ function venv-list -d "List virtual environments in the centralised location"
 end
 
 function venv-update-prompt -d "Updates the prompt in pyvenv.cfg"
+    argparse 'd/dir=' -- $argv 2>/dev/null
     argparse -N 0 -X 1 -- $argv 2>/dev/null or return 0
 
     if test (count $argv) -ge 2
-        echo "Usage: venv-update-prompt [<prompt-name>]"
+        echo "Usage: venv-update-prompt [-d/--dir VENV_DIR] [<prompt-name>]"
         return 1
     end
 
@@ -121,13 +122,19 @@ function venv-update-prompt -d "Updates the prompt in pyvenv.cfg"
         set prompt (basename $PWD)
     end
 
-    set pyvenv_cfg ".venv/pyvenv.cfg"
+    if test $_flag_dir
+        set venv_dir $_flag_dir
+    else
+        set venv_dir ".venv"
+    end
+
+    set pyvenv_cfg "$venv_dir/pyvenv.cfg"
     if not test -e $pyvenv_cfg
         echo "No pyvenv.cfg found in .venv/pyvenv.cfg"
         return 1
     end
 
-    grep -E "prompt\s*=" .venv/pyvenv.cfg > /dev/null
+    grep -E "prompt\s*=" $venv_dir/pyvenv.cfg > /dev/null
     if test $status -eq 0
         sed -i -E -r "s/^(prompt[[:space:]]?=[[:space:]]?).+/\1"$prompt"/g" $pyvenv_cfg
     else
