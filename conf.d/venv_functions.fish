@@ -21,9 +21,9 @@ function venv-create -d "Create a virtual environment in a centralised location"
     pushd $venv_root > /dev/null
 
     if test $_flag_prompt
-        set -l venv_prompt $_flag_prompt
+        set venv_prompt $_flag_prompt
     else
-        set -l venv_prompt (basename $PWD)
+        set venv_prompt $venv_name
     end
 
     if test $_flag_python
